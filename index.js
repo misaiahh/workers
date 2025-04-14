@@ -3,7 +3,6 @@ import os from 'os';
 
 function runService(workerData) {
     return new Promise((resolve, reject) => {
-        const input = {};
         const worker = new Worker('./threads/worker.js', { workerData });
         worker.on('message', resolve);
         worker.on('error', reject);
@@ -16,11 +15,10 @@ function runService(workerData) {
 
 async function run() {
     const cpuCount = os.cpus().length / 2;
+    const startTime = performance.now();
+    const workerPromises = [];
     console.info(`MAX THREADS: ${cpuCount}`);
 
-    const startTime = performance.now();
-
-    const workerPromises = [];
     for (let i = 0; i < cpuCount; i++) {
         workerPromises.push(runService(`Worker ${i + 1}`));
     }
