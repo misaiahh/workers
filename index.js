@@ -1,6 +1,12 @@
 import { Worker } from 'worker_threads';
 import os from 'os';
 
+const PERCENT = {
+    MIN: 1,
+    MAX: 0.8,
+    MEAN: 0.5,
+}
+
 function runService(workerData) {
     return new Promise((resolve, reject) => {
         const worker = new Worker('./threads/worker.js', { workerData });
@@ -14,7 +20,7 @@ function runService(workerData) {
 }
 
 async function run() {
-    const cpuCount = os.cpus().length / 2;
+    const cpuCount = Math.floor(os.cpus().length * PERCENT.MAX);
     const startTime = performance.now();
     const workerPromises = [];
     console.info(`MAX THREADS: ${cpuCount}`);
